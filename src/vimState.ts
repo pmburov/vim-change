@@ -67,7 +67,9 @@ export class VimState {
       let mode: "braces" | "quotes" | "word"
 
       let result: RangeData | null = null
-      if (bracesList.includes(text)) {
+      if (bracesList.includes(text) || text === "0" || text === "9") {
+        if (text === "9") { text = "(" }
+        if (text === "0") { text = ")" }
         if (this.selectMode) {
           selectObjects(text, modifier, editor)
           this.selectMode = false
