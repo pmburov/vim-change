@@ -1,0 +1,108 @@
+{
+  "name": "vim-change",
+  "displayName": "Vim-Change",
+  "description": "Brings Vims' (c)hange and (v)isual simple motions to VS Code",
+  "icon": "media/icon.png",
+  "version": "1.0.1",
+  "engines": {
+    "vscode": "^1.102.3"
+  },
+  "galleryBanner": {
+    "color": "#0b151b",
+    "theme": "dark"
+  },
+  "categories": [
+    "Keymaps",
+    "Other"
+  ],
+  "keywords": [
+    "vim",
+    "keymaps"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pmburov/vim-change"
+  },
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:type"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "keybindings": [
+      {
+        "key": "escape",
+        "command": "vim-change.stop",
+        "when": "editorTextFocus && vim-change.mode === input"
+      },
+      {
+        "key": "alt+]",
+        "command": "vim-change.inside",
+        "when": "editorTextFocus"
+      },
+      {
+        "key": "alt+[",
+        "command": "vim-change.around",
+        "when": "editorTextFocus"
+      },
+      {
+        "key": "shift+alt+]",
+        "command": "vim-change.select-inside",
+        "when": "editorTextFocus"
+      },
+      {
+        "key": "shift+alt+[",
+        "command": "vim-change.select-around",
+        "when": "editorTextFocus"
+      }
+    ],
+    "commands": [
+      {
+        "command": "vim-change.inside",
+        "title": "Vim-Change: Change inside"
+      },
+      {
+        "command": "vim-change.around",
+        "title": "Vim-Change: Change around"
+      },
+      {
+        "command": "vim-change.select-inside",
+        "title": "Vim-Change: Visually select inside"
+      },
+      {
+        "command": "vim-change.select-inside",
+        "title": "Vim-Change: Visually select around"
+      }
+    ],
+    "configuration": {
+      "title": "Vim-Change",
+      "properties": {
+        "vim-change.showInputIndicator": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show status line indicator when plugin is waiting for input"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts --fix",
+    "update": "npx npm-check-updates -i",
+    "deps": "npm i -g @vscode/vsce",
+    "pack": "npx @vscode/vsce package",
+    "test": "rm -rf out && vitest"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.32.0",
+    "@types/node": "^24.1.0",
+    "@types/vscode": "^1.102.0",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.32.0",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.38.0",
+    "vitest": "^3.2.4"
+  }
+}
