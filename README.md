@@ -21,3 +21,15 @@ Hotkeys and commands activate input mode to enter a single character
 - Vim-Change: Change around
 - Vim-Change: Select inside
 - Vim-Change: Select around
+
+## How to build locally
+
+Run `npm run deps` once, it will globally install `@vscode/vsce` necessary for creating `.vsix` package
+
+```bash
+npm run build
+npm run pack
+```
+
+Drag and drop `.vsix` package into Extensions sidebar area inside VS Code
+
