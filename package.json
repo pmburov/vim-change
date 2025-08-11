@@ -3,7 +3,7 @@
   "displayName": "Vim-Change",
   "description": "Brings Vims' (c)hange and (v)isual simple motions to VS Code",
   "icon": "media/icon.png",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "engines": {
     "vscode": "^1.102.3"
   },

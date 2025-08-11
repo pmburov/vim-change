@@ -1,6 +1,6 @@
 import * as vscode from "vscode"
-import { jumpInsideRangeInLine, Modifier, quotesObject, selectObjects, RangeData, wordObject } from "./core"
-import { findMatchingItem } from "./findMatchingItem"
+import { jumpInsideRangeInLine, Modifier, quotesObject, selectObjects, RangeData, wordObject, commasObject } from "./core"
+import { analyzeLine } from "./analyzeLine"
 
 export class VimState {
   static statusBar: vscode.StatusBarItem
@@ -62,9 +62,10 @@ export class VimState {
       const bracesList = ["{", "}", "[", "]", "(", ")", "<", ">"]
       const quotesList = ["'", '"', "`"]
       const wordsList = ["w", "W"]
+      const commasList = [","]
       const modifier = this.modifier
 
-      let mode: "braces" | "quotes" | "word"
+      let mode: "braces" | "quotes" | "word" | "commas"
 
       let result: RangeData | null = null
       if (bracesList.includes(text) || text === "0" || text === "9") {
@@ -74,16 +75,33 @@ export class VimState {
           selectObjects(text, modifier, editor)
           this.selectMode = false
         } else {
-          const numOfItems = findMatchingItem(editor.document.lineAt(editor.selection.anchor.line).text, text)
-          if (numOfItems.length === 1) {
-            jumpInsideRangeInLine(editor, numOfItems[0][0], numOfItems[0][1])
-          }
+          const line = editor.document.lineAt(editor.selection.anchor.line).text
+          analyzeLine(text, line, (start, end) => {
+            jumpInsideRangeInLine(editor, start, end)
+          })
           result = selectObjects(text, modifier, editor)
           mode = "braces"
         }
       } else if (quotesList.includes(text)) {
-        result = quotesObject(text, modifier, editor.selection, editor)
+        if (this.selectMode) {
+          const range = quotesObject(text, modifier, editor)
+          if (range?.range) {
+            editor.selection = new vscode.Selection(range.range.start, range.range.end)
+          }
+        } else {
+          result = quotesObject(text, modifier, editor)
+        }
         mode = "quotes"
+      } else if (commasList.includes(text)) {
+        if (this.selectMode) {
+          const range = commasObject(text, modifier, editor)
+          if (range?.range) {
+            editor.selection = new vscode.Selection(range.range.start, range.range.end)
+          }
+        } else {
+          result = commasObject(text, modifier, editor)
+        }
+        mode = "commas"
       } else if (wordsList.includes(text)) {
         if (this.selectMode) {
           await wordObject(modifier === "i" ? "w" : "W", editor, this.selectMode)
@@ -97,7 +115,7 @@ export class VimState {
           e.delete(result?.range as vscode.Range)
         }).then(() => {
           this.stop()
-          if (mode && (mode === "quotes" || mode === "word")) {
+          if (mode && (mode === "quotes" || mode === "commas" || mode === "word")) {
             // jump cursor to position
             editor.selection = new vscode.Selection(
               result?.range.start.line as number,

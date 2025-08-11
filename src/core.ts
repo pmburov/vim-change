@@ -3,6 +3,7 @@ import { Range } from "vscode"
 import { processQuotes } from "./processQuotes"
 import { expandSelection } from "./expandSelection"
 import { getBracketPairs } from "./getBracketPairs"
+import { processCommas } from "./processCommas"
 
 export type Modifier = "i" | "a"
 
@@ -10,14 +11,14 @@ export type RangeData = {
   range: Range
 }
 
-export function quotesObject(c: string, type: Modifier, selection: vscode.Selection, editor: vscode.TextEditor) {
+export function quotesObject(c: string, type: Modifier, editor: vscode.TextEditor) {
   if (!['"', "'", "`"].includes(c)) {
-    console.error(`Invalid "${c}" character for textObject`)
+    console.error(`Invalid "${c}" character`)
     return null
   }
 
-  const line = editor.document.lineAt(selection.active)
-  const ci = selection.active.character
+  const line = editor.document.lineAt(editor.selection.active)
+  const ci = editor.selection.active.character
   const result = processQuotes(line.text, c, ci, type)
 
   return {
@@ -99,5 +100,46 @@ export function selectObjects(s: string, type: Modifier, editor: vscode.TextEdit
 
   return {
     range: new Range(editor.selection.anchor, editor.selection.active)
+  }
+}
+
+export function commasObject(c: string, type: Modifier, editor: vscode.TextEditor) {
+  if (![","].includes(c)) {
+    console.error(`Invalid "${c}" character`)
+    return null
+  }
+
+  const line = editor.document.lineAt(editor.selection.active)
+  const ci = editor.selection.active.character
+  const result = processCommas(line.text, c, ci, type)
+
+  if (!result.isBetweenCommas && !result.isBetweenCommaAndBrace) {
+    return null
+  } else if (result.isBetweenCommaAndBrace) {
+    if (result.leftBraceIndex > -1 && result.rightBraceIndex === -1) {
+      return {
+        range: new Range(
+          new vscode.Position(line.lineNumber, result.leftBraceIndex),
+          new vscode.Position(line.lineNumber, result.rightIndex),
+        ),
+      }
+    } else if (result.leftBraceIndex === -1 && result.rightBraceIndex > -1) {
+      return {
+        range: new Range(
+          new vscode.Position(line.lineNumber, result.leftIndex),
+          new vscode.Position(line.lineNumber, result.rightBraceIndex),
+        ),
+      }
+    } else {
+      // TODO: investigate case
+      return null
+    }
+  }
+
+  return {
+    range: new Range(
+      new vscode.Position(line.lineNumber, result.leftIndex),
+      new vscode.Position(line.lineNumber, result.rightIndex),
+    ),
   }
 }
