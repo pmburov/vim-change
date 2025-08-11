@@ -6,12 +6,14 @@ type PairsStack = {
 }
 export function findMatchingItem(input: string, s: string) {
   const { openingBracket, closingBracket } = getBracketPairs(s)
+  let isIncompleteString = false
 
   const { stack, pairs } = [...input].reduce<PairsStack>(
     ({ pairs, stack }, char, i) => {
       if (char === openingBracket) stack.push(i);
       else if (char === closingBracket) {
         if (stack.length === 0) {
+          isIncompleteString = true
           console.warn('Incomplete string, odd number of items')
         }
         const pop = stack.pop()
@@ -24,7 +26,8 @@ export function findMatchingItem(input: string, s: string) {
     { pairs: [], stack: [] }
   );
   if (stack.length > 0) {
+    isIncompleteString = true
     console.warn('Incomplete string, odd number of items')
   }
-  return pairs;
+  return { pairs, isIncompleteString };
 };

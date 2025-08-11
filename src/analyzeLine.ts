@@ -1,9 +1,9 @@
 import { findMatchingItem } from "./findMatchingItem"
 
 export function analyzeLine(s: string, line: string, callback: (start: number, end: number) => void) {
-  const items = findMatchingItem(line, s)
+  const { pairs: items, isIncompleteString } = findMatchingItem(line, s)
 
-  if (items.length === 0) {
+  if (items.length === 0 || isIncompleteString) {
     return []
   }
 

@@ -8,17 +8,17 @@ const oddNumber = `const someResult = something.map((el) => {`
 
 describe("findMatchingItem", () => {
   test("find ()", () => {
-    const result = findMatchingItem(testString, "(")
+    const { pairs: result } = findMatchingItem(testString, "(")
     console.info('result:', result)
     expect(result.length).toBe(2)
   })
   test("find nested", () => {
-    const result = findMatchingItem(testNested, "(")
+    const { pairs: result } = findMatchingItem(testNested, "(")
     console.info('result:', result)
     expect(result.length).toBe(3)
   })
   test("find in incomplete string", () => {
-    const result = findMatchingItem(oddNumber, "(")
+    const { pairs: result } = findMatchingItem(oddNumber, "(")
     console.info('result:', result)
     expect(result.length).toBe(1)
   })
