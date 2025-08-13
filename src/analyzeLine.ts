@@ -1,7 +1,29 @@
 import { findMatchingItem } from "./findMatchingItem"
 
+export function checkLastOpening(s: string, line: string) {
+  const numOfItems = line.split("").filter(el => el === s).length
+
+  const index = line.indexOf(s)
+
+  if (numOfItems === 1 && index === line.length - 1) {
+    return index
+  }
+
+  return null
+}
+
 export function analyzeLine(s: string, line: string, callback: (start: number, end: number) => void) {
   const { pairs: items, isIncompleteString } = findMatchingItem(line, s)
+
+  /*
+  Case like this
+  const somefunction = () => {
+  */
+  const lastIndex = checkLastOpening(s, line)
+  if (lastIndex !== null) {
+    callback(lastIndex + 1, lastIndex + 1)
+    return []
+  }
 
   if (items.length === 0 || isIncompleteString) {
     return []

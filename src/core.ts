@@ -77,7 +77,7 @@ export function resetSelection(editor: vscode.TextEditor) {
   return current
 }
 
-export function jumpInsideRangeInLine(editor: vscode.TextEditor, start: number, end: number) {
+export function jumpInsideRange(editor: vscode.TextEditor, start: number, end: number) {
   const selection = new vscode.Selection(
     editor.selection.active.line,
     start,

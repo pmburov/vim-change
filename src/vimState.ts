@@ -1,5 +1,5 @@
 import * as vscode from "vscode"
-import { jumpInsideRangeInLine, Modifier, quotesObject, selectObjects, RangeData, wordObject, commasObject } from "./core"
+import { jumpInsideRange, Modifier, quotesObject, selectObjects, RangeData, wordObject, commasObject } from "./core"
 import { analyzeLine } from "./analyzeLine"
 
 export class VimState {
@@ -77,7 +77,7 @@ export class VimState {
         } else {
           const line = editor.document.lineAt(editor.selection.anchor.line).text
           analyzeLine(text, line, (start, end) => {
-            jumpInsideRangeInLine(editor, start, end)
+            jumpInsideRange(editor, start, end)
           })
           result = selectObjects(text, modifier, editor)
           mode = "braces"

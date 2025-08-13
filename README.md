@@ -33,3 +33,7 @@ npm run pack
 
 Drag and drop `.vsix` package into Extensions sidebar area inside VS Code
 
+## Credits
+
+- [vscode-expand-selection-to-scope](https://github.com/vittorioromeo/vscode-expand-selection-to-scope)
+- [vim-like-vscode](https://github.com/mint-lemonade/vim-like-vscode)
